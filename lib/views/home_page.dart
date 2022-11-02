@@ -8,8 +8,10 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
+
   String _userToDo = '';
   List todo_list = [];
+
 
   Drawer getNavDrawer(BuildContext context) {
     var headerChild = DrawerHeader(
@@ -42,7 +44,7 @@ class HomePageState extends State<HomePage> {
       headerChild,
       getNavItem(Icons.settings, "Settings", '/settings'),
       getNavItem(Icons.home, "Home", "/"),
-      getNavItem(Icons.account_box, "Deserts", '/deserts'),
+      getNavItem(Icons.emoji_food_beverage, "Deserts", '/deserts'),
       aboutChild
     ];
 

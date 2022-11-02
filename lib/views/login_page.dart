@@ -1,114 +1,139 @@
 import 'package:flutter/material.dart';
-import 'package:project/constants.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+import 'home_page.dart';
 
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPage createState() => _LoginPage();
+}
+
+class _LoginPage extends State<LoginPage> {
+  TextEditingController nameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  GlobalKey<FormState> formkey = GlobalKey<FormState>();
+
+  String? validatePassword(String value) {
+    if (value.isEmpty) {
+      return "* Required";
+    } else if (value.length < 6) {
+      return "Password should be atleast 6 characters";
+    } else if (value.length > 15) {
+      return "Password should not be greater than 15 characters";
+    } else
+      return null;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(AppConstants.appBarTitle)),
-      body: const MyStatefulWidget(),
-    );
-  }
-}
-
-class MyStatefulWidget extends StatefulWidget {
-  const MyStatefulWidget({Key? key}) : super(key: key);
-
-  @override
-  State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
-}
-
-class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  TextEditingController nameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.all(10),
-        child: ListView(
-          children: <Widget>[
-            Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(10),
-                child: const Text(
-                  'Login',
-                  style: TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 30),
-                )),
-            Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(10),
-                child: const Text(
-                  'Sign in',
-                  style: TextStyle(fontSize: 20),
-                )),
-            Container(
-              padding: const EdgeInsets.all(10),
-              child: TextField(
-                controller: nameController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'User Name',
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text("Login Page"),
+      ),
+      body: SingleChildScrollView(
+        child: Form(
+          autovalidateMode: AutovalidateMode.always,
+          key: formkey,
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 60.0, bottom: 20),
+                child: Center(
+                  child: Container(
+                      width: 200,
+                      height: 150,
+                      child: Image.asset('cook1.png')),
                 ),
               ),
-            ),
-            Container(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-              child: TextField(
-                obscureText: true,
-                controller: passwordController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Password',
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                child: TextFormField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Email',
+                        hintText: 'Enter valid email id as abc@gmail.com'),
+                    validator: MultiValidator([
+                      RequiredValidator(errorText: "* Required"),
+                      EmailValidator(errorText: "Enter valid email id"),
+                    ])),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 15.0, right: 15.0, top: 15, bottom: 0),
+                child: TextFormField(
+                    controller: passwordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Password',
+                        hintText: 'Enter secure password'),
+                    validator: MultiValidator([
+                      RequiredValidator(errorText: "* Required"),
+                      MinLengthValidator(6,
+                          errorText: "Password should be atleast 6 characters"),
+                      MaxLengthValidator(15,
+                          errorText:
+                              "Password should not be greater than 15 characters")
+                    ])
+                    //validatePassword,        //Function to check validation
+                    ),
+              ),
+              TextButton(
+                onPressed: () {
+                  //TODO FORGOT PASSWORD SCREEN GOES HERE
+                },
+                child: Text(
+                  'Forgot Password',
+                  style: TextStyle(color: Colors.blue, fontSize: 15),
                 ),
               ),
-            ),
-            TextButton(
-              onPressed: () {
-                //forgot password screen
-              },
-              child: const Text(
-                'Forgot Password',
-              ),
-            ),
-            Container(
+              Container(
                 height: 50,
-                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                width: 250,
+                decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(20)),
                 child: ElevatedButton(
-                  child: const Text('Login'),
                   onPressed: () {
-                    if (nameController.text == 'user' &&
-                        passwordController.text == '123456') {
-                      print('success');
-                      Navigator.of(context)
-                          .pushNamedAndRemoveUntil('/', (route) => false);
+                    if (formkey.currentState!.validate()) {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => HomePage()));
+                      print("Validated");
                     } else {
-                      Dialog(backgroundColor: Colors.redAccent,);
+                      print("Not Validated");
                     }
                   },
-                )),
-            Row(
-              children: <Widget>[
-                const Text('Does not have account?'),
-                TextButton(
-                  child: const Text(
-                    'Sign in',
-                    style: TextStyle(fontSize: 20),
+                  child: Text(
+                    'Login',
+                    style: TextStyle(color: Colors.white, fontSize: 25),
                   ),
-                  onPressed: () {
-                    //signup screen
-                  },
-                )
-              ],
-              mainAxisAlignment: MainAxisAlignment.center,
-            ),
-          ],
-        ));
+                ),
+              ),
+              SizedBox(
+                height: 100,
+              ),
+              Row(
+                children: <Widget>[
+                  const Text('Does not have account?'),
+                  TextButton(
+                    child: const Text(
+                      'Sign in',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    onPressed: () {
+                      //signup screen
+                    },
+                  )
+                ],
+                mainAxisAlignment: MainAxisAlignment.center,
+              ),
+            ],
+          ),
+        ),
+
+      ),
+    );
   }
 }

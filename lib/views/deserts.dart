@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project/constants.dart';
-import 'package:project/recipes/recipes_deserts.dart';
+import 'package:project/views/recipes_deserts.dart';
 
 import '../models/recipe_data.dart';
 
